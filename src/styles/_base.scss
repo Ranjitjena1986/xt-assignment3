@@ -1,0 +1,63 @@
+  body {
+    color: $body-color;
+  }  
+
+  h3{
+    color: $black;
+  }
+  
+  .navbar-brand{
+    font-size: 1.5rem;
+  }
+
+  .nav-link {
+    color: rgba(251, 243, 243, 1) !important;
+    font-weight: 500;
+  }
+
+  .btn-outline-success{
+    color: $btn-color;
+    border-color:$btn-outline-color;
+    font-weight: 500;
+  }
+
+  .noborder{
+    border: 0px !important;;
+  }
+  
+  .fontbold{
+    font-weight: 600;
+  }
+
+  .btn-primary{
+    background-color: $btn-primary-color;
+    border-color: $btn-primary-color;
+  }   
+
+  .mt-6{
+    margin-top: 5rem !important;
+  }
+
+  .board-color{
+    background:#e2e4e6;
+    color: #948e8e;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .board-color:hover{
+    background:#a6a8aa;
+    color: #948e8e;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+ 
+  
+
+  @media (min-width: 40em) {
+      
+  }
+
+
+  
+ 
