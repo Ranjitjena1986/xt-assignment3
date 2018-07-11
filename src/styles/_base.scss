@@ -44,6 +44,7 @@
     font-weight: 500;
     cursor: pointer;
   }
+
   .board-color:hover{
     background:#a6a8aa;
     color: #948e8e;
@@ -55,12 +56,52 @@
     cursor: pointer;
   }
 
- 
-  
-
-  @media (min-width: 40em) {
-      
+  #boards .close {
+    color: #f0e7e7;
   }
+
+.list {
+    background: #e2e4e6;
+    border-radius: 3px;
+    box-sizing: border-box;
+    flex-direction: column;
+    max-height: 100%;
+    white-space: normal;
+    cursor: pointer;
+    box-shadow: 0 1px 8px 0 rgba(0,0,0,0.2);
+}
+
+.addcard{
+  font-weight: 500;
+}
+
+.addcard:hover{
+  background: #a6a8aa;
+}
+
+.list-card {
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 #ccc;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 8px;
+  max-width: 300px;
+  min-height: 20px;
+  position: relative;
+  text-decoration: none;
+  z-index: 0;
+}
+
+.portlet-placeholder {
+  border: 1px dotted black;
+  margin: 0 1em 1em 0;
+  height: 50px;
+} 
+
+@media (min-width: 40em) {
+      
+}
 
 
   

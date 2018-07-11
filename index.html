@@ -32,18 +32,17 @@
     </header>
     <div class="container mt-6">
         <div class="row">
-            <aside class="col-md-4">
+            <aside class="col-md-3 col-12">
                 <ul class="list-group">
-                    <li class="list-group-item pointer">Home</li>
-                    <li class="list-group-item active pointer">Board</li>
-                    <li class="list-group-item pointer">Test</li>
+                    <li class="list-group-item pointer"><a href="./">Home</a></li>
+                    <li class="list-group-item pointer"><a href="./">Board</a></li>
                 </ul>
-            </aside>
-
-            <section class="col-md-8 pt-3" >
-                
-                <div class="col-2 py-3 board-color" onclick="getBoardObj()">Add Board</div>
-            </section>
+            </aside>            
+            <div class="col-12 col-md-9 mt-3 px-4">
+                <div class="row" id="boards">
+                    <div class="col-12 col-md-3 mr-1 mt-1 py-3 board-color" onclick="getBoardObj()">Add Board</div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginmodalCenterTitle" aria-hidden="true">
@@ -55,14 +54,13 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">                    
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Board Name</label>
-                        <input type="email" class="form-control" id="boardname" aria-describedby="boardname" placeholder="Enter board name" data-toggle="tooltip"
+                        <label for="Board Name">Board Name</label>
+                        <input type="text" class="form-control" id="boardname" aria-describedby="boardname" placeholder="Enter board name" data-toggle="tooltip"
                             data-placement="right" title="Enter board name">
                         <small id="boardHelp" class="form-text text-danger d-none">Please enter board name.</small>
                     </div>
-                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="addboard">Save</button>
