@@ -213,9 +213,7 @@ export class List {
     }
 
     dragdrop(dropid, dragid){
-        //let dropType = document.getElementById(dropid).getAttribute('type');
         let dropDataList = document.getElementById(dropid).getAttribute('data-list');
-
         let dragList = document.getElementById(dragid).getAttribute('data-list');
         let dragCard = document.getElementById(dragid).getAttribute('data-card');
         

@@ -70,7 +70,6 @@ export class Board {
     }
 
     cleanMemory(){
-        console.log("clean memory");
         this.currentKey = ""; 
     }
 }
