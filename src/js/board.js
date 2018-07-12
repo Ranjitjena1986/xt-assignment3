@@ -44,12 +44,13 @@ export class Board {
         this.jQuery('#boards').html('');        
         for (let keys of Object.keys(window.boardObj)) {
             boards += `<div class=" col-12 col-md-3 mr-1 mt-1 py-2 btn-primary ">
-            <span onclick="loadList('${keys}')" class="col-10 pointer py-3">${keys}</span>  
-            <span onclick="editList('${keys}')" class="pointer"><i class="far fa-edit"></i>
-            </span>                     
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="deleteBoard('${keys}')">
-                <span aria-hidden="true">&times;</span>
-            </button>            
+            <div class="row">
+                <div onclick="loadList('${keys}')" class="col-8 pointer">${keys}</div>
+                <div onclick="editList('${keys}')" class="col-2 pointer"><i class="far fa-edit"></i></div>
+                <button type="button" class="col-2 close" data-dismiss="alert" aria-label="Close" onclick="deleteBoard('${keys}')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>                 
             </div>`;
         }
         boards += `<div class="col-md-3 mr-1 mt-1 py-3 board-color" onclick="getBoardObj()">Add Board</div>`;
