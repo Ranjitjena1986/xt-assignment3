@@ -39,7 +39,15 @@ window.onload = () => {
             window.loadList= (key) =>{
                 window.location = "./board.html?boardname=" + key;
             }
-            board.loadBoards();
+
+            window.editList = (key)=>{
+                board.editList(key);
+            }
+
+            board.loadBoards();  
+            jQuery('#loginModal').on('hidden.bs.modal', function (e) {
+                board.cleanMemory();
+            });          
         break;
         case '/board.html':
             let path = getUrlParameter('boardname');
@@ -70,17 +78,50 @@ window.onload = () => {
             window.saveCard = (key) =>{
                 list.saveCard(key);
             }
+
+            window.editBoardList = (key)=>{
+                list.editBoardList(key);
+            }
+
+            window.cancelList = ()=>{
+                list.cancelList();
+            }
+
+            window.deleteList =  (key)=>{
+                let result = confirm("Want to delete ?");
+                if (result) {
+                    list.deleteList(key);
+                }              
+            }
+
+            window.editCard = (cardkey)=>{
+                list.editCard(cardkey);
+            }
+
+            window.cleanCard = (cardkey)=>{
+                list.cleanCard(cardkey);
+            }
+
             list.createLists();
             jQuery("#listboard" ).sortable({ 
                 connectWith: "#listboard", 
-                handle: ".list-header", 
-                start: function (event, ui) {
-                    ui.item.addClass('tilt');
-                },
-                stop: function (event, ui) {
-                    ui.item.removeClass("tilt");                  
-                } 
-            });         
+                handle: ".list-header"               
+            });   
+            
+            window.allowDrop = (ev) => {
+                ev.preventDefault();
+            }
+            
+            window.drag = (ev) => {
+                ev.dataTransfer.setData("text", ev.target.id);
+            }
+            
+            window.drop = (ev)=> {
+                ev.preventDefault();
+                let data = ev.dataTransfer.getData("text");                
+                list.dragdrop(ev.target.id,data);
+            }
+            
         break;
         default:
         break;

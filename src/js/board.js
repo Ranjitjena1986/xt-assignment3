@@ -2,6 +2,7 @@ export class Board {
 
     constructor(jQuery) {
         this.jQuery = jQuery;
+        this.currentKey = "";
     }
 
     openBoardWindow() {
@@ -20,7 +21,15 @@ export class Board {
             if (objKeys.indexOf(boardName) === -1) {
                 this.jQuery('#boardname').val('');
                 this.jQuery("#boardHelp").addClass("d-none");
-                window.boardObj['' + boardName] = {};
+                if(this.currentKey !==""){
+                    let data = window.boardObj['' + this.currentKey];
+                    window.boardObj['' + boardName] = {};
+                    window.boardObj['' + boardName] = data;
+                    delete window.boardObj['' + this.currentKey];
+                    this.currentKey = "";
+                }else{
+                    window.boardObj['' + boardName] = {};
+                }                
                 localStorage.setItem("board", JSON.stringify(window.boardObj));
                 window.location = "./board.html?boardname=" + boardName;
             } else {
@@ -35,7 +44,9 @@ export class Board {
         this.jQuery('#boards').html('');        
         for (let keys of Object.keys(window.boardObj)) {
             boards += `<div class=" col-12 col-md-3 mr-1 mt-1 py-2 btn-primary ">
-            <span onclick="loadList('${keys}')" class="col-10 pointer py-3">${keys}</span>                       
+            <span onclick="loadList('${keys}')" class="col-10 pointer py-3">${keys}</span>  
+            <span onclick="editList('${keys}')" class="pointer"><i class="far fa-edit"></i>
+            </span>                     
             <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="deleteBoard('${keys}')">
                 <span aria-hidden="true">&times;</span>
             </button>            
@@ -50,4 +61,15 @@ export class Board {
         localStorage.setItem("board", JSON.stringify(window.boardObj));
         this.loadBoards();
     }   
+
+    editList(key){
+        this.currentKey = key;
+        this.openBoardWindow();
+        this.jQuery('#boardname').val(key);
+    }
+
+    cleanMemory(){
+        console.log("clean memory");
+        this.currentKey = ""; 
+    }
 }

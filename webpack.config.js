@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const extractPlugin=  new ExtractTextPlugin({
+const extractPlugin = new ExtractTextPlugin({
     filename: './styles.css'
 });
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
         publicPath: '/dist'
-    },    
+    },
     module: {
         rules: [
             {
@@ -37,7 +37,15 @@ module.exports = {
                 })
             },
             {
-                test: /\.(jpg|png)$/,
+                test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: 'url-loader',
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
+                use: 'file-loader',
+            },
+            {
+                test: /\.(jpe?g|png|gif|svg)$/,
                 use: [
                     {
                         loader: 'file-loader',
@@ -57,6 +65,6 @@ module.exports = {
             filename: "./index.html"
         }),
         extractPlugin
-      
+
     ]
 }

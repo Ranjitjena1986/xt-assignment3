@@ -2,6 +2,8 @@ export class List {
     constructor(jQuery, path) {
         this.jQuery = jQuery;
         this.path = path;
+        this.oldListName = "";
+        this.oldCardName = "";
     }
 
     addList() {
@@ -15,7 +17,13 @@ export class List {
     }
 
     saveList() {
-        let listtitle = '' + this.jQuery('#listtitle').val();
+        let listtitle = '';
+        if(this.oldListName===""){
+            listtitle = this.jQuery('#listtitle').val();
+        }else{
+            listtitle = this.jQuery('#editlist-'+this.oldListName).val();
+        }
+        
         if (listtitle === '' || listtitle === 'undefined') {
             this.jQuery("#listHelp").html('Please enter list title.');
             this.jQuery("#listHelp").removeClass("d-none");
@@ -25,7 +33,16 @@ export class List {
                 this.jQuery('#listtitle').val('');
                 this.jQuery("#listHelp").addClass("d-none");
                 this.closeList();
-                window.boardObj['' + this.path]['' + listtitle] = {};
+                if(this.oldListName!==""){
+                    let data = window.boardObj['' + this.path][''+this.oldListName];
+                    window.boardObj['' + this.path]['' + listtitle] = {};
+                    window.boardObj['' + this.path]['' + listtitle] =data;
+                    delete window.boardObj['' + this.path][''+this.oldListName];
+                    this.cancelList();
+                    this.oldListName = "";
+                }else{
+                    window.boardObj['' + this.path]['' + listtitle] = {};
+                }
                 localStorage.setItem("board", JSON.stringify(window.boardObj));
             } else {
                 this.jQuery("#listHelp").html(listtitle + ' list title already exist,try another title!');
@@ -46,7 +63,13 @@ export class List {
     }
 
     saveCard(key) {
-        let card = '' + this.jQuery('#card-text-' + key).val();
+        let card = '';         
+        if(this.oldCardName===''){
+            card = this.jQuery('#card-text-' + key).val();
+        }else{
+            card = this.jQuery('#edit-card-text-'+this.oldCardName).val();
+        }
+
         if (card === '' || card === 'undefined') {
             this.jQuery("#cardHelp-" + key).html('Please enter card.');
             this.jQuery("#cardHelp-" + key).removeClass("d-none");
@@ -56,7 +79,16 @@ export class List {
                 this.jQuery('#card-text-' + key).val('');
                 this.closeCard(key)
                 this.jQuery("#cardHelp-" + key).addClass("d-none");
-                window.boardObj['' + this.path]['' + key]['' + card] = {};
+                if(this.oldCardName===''){
+                    window.boardObj['' + this.path]['' + key]['' + card] = {};
+                }else{
+                    let data = window.boardObj['' + this.path]['' +key]['' + this.oldCardName];
+                    window.boardObj['' + this.path]['' + key]['' + card] = {};
+                    window.boardObj['' + this.path]['' + key]['' + card] = data;
+                    delete window.boardObj['' + this.path]['' +key]['' + this.oldCardName];
+                    cleanCard(this.oldCardName);
+                    this.oldCardName = "";
+                }
                 localStorage.setItem("board", JSON.stringify(window.boardObj));
             } else {
                 this.jQuery("#cardHelp-" + key).html(card + ' already exist,try another title!');
@@ -68,15 +100,36 @@ export class List {
 
     createCards(id, list) {
         let cards = "";
+        let listid = list.replace(" ", "-");
         for (let keys of Object.keys(window.boardObj['' + this.path]['' + list])) {
-            cards += `<div class="my-1 list-card px-1 py-1">
-            ${keys}
+            
+            let keyid = keys.replace(" ", "-");
+
+            cards += `<div class="my-1 list-card px-1 py-1" id="drag-${keyid}-${listid}" data-list="${list}" data-card="${keys}" draggable="true" ondragstart="drag(event)">
+                <div id="card-${keys}" class="row">
+                    <div class="col-9 card-head"  type="card" data-list="${list}" data-card="${keys}" id="id-${listid}-${keyid}">
+                         ${keys}
+                    </div>
+                    <div class="col-2" onclick="editCard('${keys}')">
+                        <i class="far fa-edit"></i>
+                    </div>
+                    
+                </div>  
+                <div id="edit-card-${keys}" class="row d-none">
+                    <div class="col-12">
+                        <textarea class="form-control" id="edit-card-text-${keys}" rows="2"></textarea>
+                        <button type="button" class="btn btn-primary mt-1" id="savecard" onclick="saveCard('${list}')">Add Card</button>
+                        <button type="button" class="close pt-2" data-dismiss="alert" aria-label="Close" onclick="cleanCard('${keys}')">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>              
             </div>`;
         }
         if (id === '') {
             return cards;
         } else {
-            this.jQuery('#cards-' + list).html(cards);
+            this.jQuery('#cards-' + listid).html(cards);
         }
     }
 
@@ -84,11 +137,27 @@ export class List {
         let lists = "";
         for (let keys of Object.keys(window.boardObj['' + this.path])) {
             let cards = this.createCards('', keys);
+            let keyid = keys.replace(" ","-");
             lists += `<div class="col-12 col-md-3 list py-2 mr-3 mt-3">
             <div class="list-header col-12 pl-0 pr-0" id="header-${keys}">
-                <h4>${keys}</h4>
+                <div class="row" id="boardlist-${keys}">
+                    <h4 class="col-8">${keys}</h4>
+                    <div class="col-2 pointer pull-right pt-2" onclick="editBoardList('${keys}')"><i class="far fa-edit"></i></div>
+                    <button type="button" class="col-1 close" data-dismiss="alert" aria-label="Close" onclick="deleteList('${keys}')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="row d-none" id="editboardlist-${keys}">
+                    <div class="col-8"><input type="text" class="form-control" id="editlist-${keys}" aria-describedby="editlist-${keys}" placeholder="Enter List title" data-toggle="tooltip"
+                    data-placement="right" title="Enter List title"></div>
+                    <span class="col-2 pt-2" onclick="saveList()"> <i class="fas fa-save"></i></span>                    
+                    <button type="button" class="close pt-0" data-dismiss="alert" aria-label="Close" onclick="cancelList()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
             </div>
-            <div class="col-12 pl-0 pr-0" id="cards-${keys}">
+            <div class="col-12 pl-0 pr-0 listofcards" type="list" id="cards-${keyid}" data-list="${keys}" ondrop="drop(event)" ondragover="allowDrop(event)">
                 ${cards}
             </div>
             <div class="col-12 pl-0 pr-0">
@@ -107,5 +176,53 @@ export class List {
         </div>`;
         }
         this.jQuery('#listboard').html(lists);
+    }
+    
+    editBoardList(key){
+        this.jQuery('#editlist-'+key).val(key);
+        this.oldListName = key;
+        this.jQuery("#boardlist-"+key).addClass('d-none');
+        this.jQuery("#editboardlist-"+key).removeClass('d-none');
+    }
+
+    cancelList(){        
+        this.jQuery("#boardlist-"+this.oldListName).removeClass('d-none');
+        this.jQuery("#editboardlist-"+this.oldListName).addClass('d-none');
+        this.jQuery('#editlist-'+this.oldListName).val('');
+        this.oldListName = "";
+    }
+
+    deleteList(key){
+        delete window.boardObj['' + this.path]['' + key];
+        localStorage.setItem("board", JSON.stringify(window.boardObj));
+        this.createLists();
+    }
+
+    editCard(cardkey){
+        this.jQuery("#card-"+cardkey).addClass('d-none');
+        this.jQuery("#edit-card-"+cardkey). removeClass('d-none');
+        this.jQuery('#edit-card-text-'+cardkey).val(cardkey);
+        this.oldCardName = cardkey;
+    }
+
+    cleanCard(cardkey){
+        this.jQuery("#card-"+cardkey).removeClass('d-none');
+        this.jQuery("#edit-card-"+cardkey).addClass('d-none');
+        this.jQuery('#edit-card-text-'+cardkey).val('');
+        this.oldCardName = "";
+    }
+
+    dragdrop(dropid, dragid){
+        //let dropType = document.getElementById(dropid).getAttribute('type');
+        let dropDataList = document.getElementById(dropid).getAttribute('data-list');
+
+        let dragList = document.getElementById(dragid).getAttribute('data-list');
+        let dragCard = document.getElementById(dragid).getAttribute('data-card');
+        
+        window.boardObj[''+this.path][''+dropDataList][''+dragCard] = {};
+        delete window.boardObj[''+this.path][''+dragList][''+dragCard];
+        
+        localStorage.setItem("board", JSON.stringify(window.boardObj));
+        this.createLists();
     }
 }
